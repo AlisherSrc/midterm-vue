@@ -1,15 +1,15 @@
+<script setup>
+import Header from '~/components/Header.vue';
+import ProductDetail from '~/components/ProductDetail.vue';
+</script>
+
 <template>
-<div>
-   <ProductDetail/>
-</div>
+   <div>
+      <Header />
+      <ProductDetail />
+      <AppFooter />
+   </div>
 </template>
 
 
-<script setup>
-import productDetail from '~/components/productDetail.vue';
-</script>
-
-
-<style scoped>
-
-</style>
+<style scoped></style>

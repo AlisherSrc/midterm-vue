@@ -1,5 +1,6 @@
 <script>
 import {products} from "@/data/data.ts"
+import { useCartStore } from "~/store/cart";
 export default {
   // props: {
   //   cartItems: {
@@ -8,8 +9,10 @@ export default {
   //   }
   // },
   data() {
+    const cartStore = useCartStore();
+    
     return {
-      cartItems: products.slice(0, 6).map(item => ({ ...item, quantity: 1 }))
+      cartItems: cartStore.cartItems.map(item => ({ ...item, quantity: 1 }))
     }
   },
   methods: {

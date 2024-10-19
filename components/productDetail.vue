@@ -1,217 +1,299 @@
-<script setup>
-import { computed } from 'vue';
-import { useRoute } from 'vue-router';
-import { useProductsStore } from '@/store/products'; // Импорт Pinia store
+<script>
+import {products} from "@/data/data.ts";
+import { productsState } from "~/store/productsState";
+import { useCartStore } from "~/store/cart";
 
-// Инициализируем маршрут
-const route = useRoute();
+export default {
+  name: "ProductDetail",
+  data() {
+    const productsStore = productsState();
+    const cartStore = useCartStore();
 
-// Используем Pinia store
-const productsStore = useProductsStore();
+    return {
+      product: productsStore.activeProduct,
+      cartStore: cartStore
+    }
+  },
+  methods: {
+    getStarType(star) {
+      const rating = this.product.rating;
 
-// Получаем все продукты из Pinia store
-const products = computed(() => productsStore.products);
-
-// Найдем нужный продукт по ID из маршрута
-const productId = route.params.id;
-const product = computed(() => products.value.find(item => item.id === productId));
-
-// Логика для количества товаров
-const count = ref(1);
-
-// Уменьшение количества
-const decrement = () => {
-  if (count.value > 1) {
-    count.value--;
+      if (star <= Math.floor(rating)) {
+        return '/stars/star.png'; // Полная звезда
+      } else if (star === Math.ceil(rating) && rating % 1 !== 0) {
+        return '/stars/halfstar.png'; // Половинная звезда
+      } else {
+        return '';
+      }
+    },
   }
-};
-
-// Увеличение количества
-const increment = () => {
-  count.value++;
-};
+}
 </script>
 
 <template>
-   <div v-if="product" class="product-detail">
-      <div class="top">
-         <div class="product-images">
+  <div>
+    <div class="product-container">
+      <div class="product-images">
+        <div class="product-main-image">
+          <img :src="product.images[0].url" alt="main-image" class="main-image" width="620px" height="620px">
+        </div>
+        <div class="product-extra-images">
+          <img :src="product.images[0].url" alt="extra-image" class="extra-image" width="210px" height="185px">
+          <img :src="product.images[1].url" alt="extra-image" class="extra-image" width="210px" height="210px">
+          <img :src="product.images[1].url" alt="extra-image" class="extra-image" width="210px" height="210px">
+        </div>
+      </div>
+
+      <div class="product-info">
+        <div class="product-name-container">
+          <h1 class="product-name">{{ product.name }}</h1>
+          <div class="rating-stars">
             <img
-              v-for="image in product.images"
-              :src="image.url"
-              :alt="image.alt"
-              class="product-image"
-              :key="image.url"
+                v-for="star in 5"
+                :key="star"
+                :src="getStarType(star)"
+                class="star-icon"
+                width="17px"
             />
-         </div>
-         <div class="product">
-            <div class="product-1">
-               <div class="product-name">
-                  <h1 class="name">{{ product.name }}</h1>
-                  <div class="star-rating">
-                     <!-- star -->
-                  </div>
-               </div>
-               <div class="product-status">
-                  <p v-if="product.in_stock" class="in-stock">In Stock</p>
-                  <p v-else class="out-of-stock">Out of Stock</p>
-               </div>
-            </div>
-            <div class="product-2">
-               <p class="ID">ID: {{ product.id }}</p>
-               <p class="trademark">Country: {{ product.country }}</p>
-               <p class="category">Category: {{ product.category }}</p>
-            </div>
-            <div class="product-3">
-               <p class="Colour">Colour: {{ product.color }}</p>
-               <p class="size">Size: {{ product.size }}</p>
-            </div>
-            <div class="product-4">
-               <p>{{ product.price }}$</p>
-               <div class="product-5">
-                  <div class="quantity">
-                     <button class="but" @click="decrement">-</button>
-                     <div class="cnt">
-                        <p>{{ count }}</p>
-                     </div>
-                     <button class="but" @click="increment">+</button>
-                  </div>
-                  <div class="cart">
-                     <button class="cartbt">
-                        <p>CART</p>
-                        <img src="/shopping-cart.png" alt="shopping cart icon">
-                     </button>
-                  </div>
-               </div>
-            </div>
-         </div>
+          </div>
+        </div>
+
+        <p v-if="product.in_stock" style="color:rgba(36, 173, 83, 1)" class="in-stock"> In Stock</p>
+        <p v-else style="color:red" class="in-stock">Not In Stock</p>
+
+        <hr>
+
+        <div class="info-container">
+
+          <div class="info-container-flex">
+            <span>ID</span>
+            <span>{{ product.id }}</span>
+          </div>
+
+          <div class="info-container-flex">
+            <span>Country</span>
+            <span>{{ product.country }}</span>
+          </div>
+
+          <div class="info-container-flex">
+            <span>Brand</span>
+            <span>{{ product.brand }}</span>
+          </div>
+
+          <div class="info-container-flex">
+            <span>Color</span>
+            <span>{{ product.color }}</span>
+          </div>
+
+          <div class="info-container-flex">
+            <span>Size</span>
+            <span>{{ product.size }}</span>
+          </div>
+
+        </div>
+
+        <hr style="margin-top: 100px">
+
+        <div class="product-total">
+          <h1>{{product.price}}$</h1>
+          <button class="cart-button" v-on:click="cartStore.addItem(product)">Cart<img src="@/assets/images/product-cart.svg" alt="Cart" width="18px"></button>
+        </div>
+
       </div>
-      <div class="bot">
-         <p>Description: <br> {{ product.description }}</p>
-      </div>
-   </div>
+
+    </div>
+
+    <div class="product-description">
+      <h1 class="description-title">Description</h1>
+      <p class="product-paragraph">{{product.description}}</p>
+    </div>
+  </div>
 </template>
 
-
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
 
-.product-detail{
-   display: flex;
-   flex-direction: column;
-   justify-content: space-between;
-}
-.top{
-   display: flex;
-   flex-direction: row;
-   justify-content: space-between;
-}
-.product{
-   display: flex;
-   flex-direction: column;
-   justify-content: space-between;
-   font-family: 'Montserrat', sans-serif;
-   border: 1px solid black;
-   background: #FFFFFF;  
-   width: 650px;
-   height: 600px;
-   padding: 10px;
-
+.product-container {
+  display: flex;
 }
 
-.product-1{
-   flex-direction: column;
+.product-name-container {
+  display: flex;
+  align-content: center;
 }
-.product-name{
 
-}
-.name{
-   font-size: 24px;
-   font-weight: 700;
-   line-height: 29px;
-   color: #141414;
-   font-family: 'Montserrat', sans-serif;
-}
-.product-status .in-stock {
-   color: #24AD53;
-   font-weight: 500;
-   font-size: 16px;
-   line-height: 19.5px;
-}
-.product-status .out-of-stock {
-   color: red;
-   font-weight: 500;
-   font-size: 16px;
-   line-height: 19.5px;
-}
-.product-5{
-   display: flex;
-   flex-direction: row;
-   justify-content: space-between;
-}
-.product-5 .quantity{
-   display: flex;
-   flex-direction: row;
-   width: 126.81px;
-   height: 50px;
-   top: -1682px;
-   left: 1582.12px;
-   gap: 0px;
-   opacity: 0px;
-   justify-content: space-between;
+.product-name {
+  /* IPhone 12 */
 
-}
-.product-5 .quantity p{
-   font-size: 18px;
-   font-weight: 500;
-   line-height: 21.94px;
-   text-align: center;
-   height:30px;
-}
-.product-5 .quantity .cnt{
-   width: 41.81px;
-   height: 50px;
-   top: -1682px;
-   left: 1582.12px;
-   gap: 0px;
-   opacity: 0px;
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 29px;
 
+  color: #141414;
 }
-.product-5 .quantity .but{
-   width: 41.81px;
-   height: 50px;
-   top: -1682px;
-   left: 1582.12px;
-   gap: 0px;
-   opacity: 0px;
-   color: #FFFFFF;
-   background-color: #141414;
-}
-.cartbt img{
-   width: 15.05px;
-   height: 12.19px;
-   top: -1665px;
-   left: 2066.8px;
-   gap: 0px;
-   border: 1.5px 0px 0px 0px;
-   opacity: 0px;
 
+.rating-stars {
+  margin-left: 30px;
+  padding-top: 20px;
 }
-.cartbt{
-   display: flex;
-   flex-direction: row;
-   width: 190.68px;
-   height: 50px;
-   top: -1681px;
-   left: 1931.32px;
-   gap: 0px;
-   border-radius: 3px 0px 0px 0px;
-   opacity: 0px;
-   background: #E8AA31;
-   box-shadow: 0px 4px 20px 0px #E8AA316E;
+
+.rating-stars img {
+  margin-left: 10px;
+}
+
+.product-images {
+  display: flex;
+  flex-direction: column;
+}
+
+.product-extra-images {
+  display: flex;
+}
+
+.product-info {
+  margin-top: 170px;
+  width: 700px;
+  padding: 13px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.in-stock {
+  /* In Stock */
+  margin-top: 0;
+  margin-bottom: 50px;
+  font-family: 'Readex Pro', sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.info-container {
+  margin-top: 30px;
+
+
+  font-family: 'Readex Pro', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 22px;
+
+  color: #141414;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.info-container span {
+  margin-top: 20px;
+
+  width: 300px;
+
+  display: flex;
+  justify-content: space-between;
+
+  flex: 1;
+  text-align: center;
+}
+
+.info-container-flex {
+  display: flex;
+  justify-content: space-between;
+}
+
+.product-total {
+
+  margin-top: 50px;
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
 
 }
 
+.cart-button {
+  /* Group 235 */
+  width: 191px;
+  height: 50px;
 
+  background: #E8AA31;
+  box-shadow: 0 4px 20px rgba(232, 170, 49, 0.43);
+  border-radius: 3px;
+
+  border: none;
+
+  display: flex;
+  justify-content: space-around;
+  align-content: center;
+
+  /* Cart */
+
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 46px;
+
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+
+  margin-top: 10px;
+}
+
+.cart-button:hover {
+  background: #fab837;
+}
+
+.cart-button img {
+  margin-top: 14px;
+}
+
+.product-description {
+  margin-top: 100px;
+
+  width: 1316px;
+  height: 404px;
+
+  background: #FEFEFE;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+
+  padding: 13px;
+}
+
+.description-title {
+  /* Description */
+
+  width: 120px;
+  height: 24px;
+
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
+
+  color: #141414;
+
+  padding-bottom: 4px;
+
+  border-bottom: #E8AA31 2px solid;
+
+}
+
+.product-paragraph {
+
+  width: 1186px;
+  height: 297px;
+
+  font-family: 'Readex Pro', sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 27px;
+
+  color: #141414;
+
+}
 
 </style>

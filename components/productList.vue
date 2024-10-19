@@ -88,6 +88,7 @@
 
             <div class="products-grid">
                <div v-for="product in paginatedProducts" :key="product.id" class="product-card">
+                  <div v-on:click="productsStateStore.setProduct(product)">
                   <NuxtLink :to="{ name: 'products-id', params: { id: product.id } }" class="product-link">
                      <img :src="product.images[0].url" :alt="product.name" class="product-image" width="320px" height="320px"/>
                      <h2 class="product-name">{{ product.name }}</h2>
@@ -101,6 +102,7 @@
                      </div>
                      <p class="product-price">{{ product.price }} $</p>
                   </NuxtLink>
+               </div>
                </div>
             </div>
 
@@ -120,16 +122,17 @@
 <script setup>
 import { computed, ref } from 'vue';
 import { useProductsStore } from '@/store/products';
-
+import { productsState } from '~/store/productsState';
 // Fetch products from Pinia store
 const productsStore = useProductsStore();
+const productsStateStore = productsState();
 const products = computed(() => productsStore.products);
 
 // Search field
 const searchQuery = ref('');
 
 // Category filter
-const selectedCategory = ref(''); // New category filter
+const selectedCategory = ref(productsStateStore.activeCategory); // New category filter
 
 // Price filter variables
 const minCost = ref(100); // Minimum price

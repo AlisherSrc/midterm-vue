@@ -1,4 +1,7 @@
 <script setup>
+import { productsState } from '~/store/productsState';
+
+const productStateStore = productsState();
 
 </script>
 
@@ -9,7 +12,7 @@
         <h1>The new phones are here take a look.</h1>
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Scelerisque in est dui, aliquam, tempor. Faucibus
           morbi turpis.</p>
-        <button class="explore-button"><a href="#">Explore</a></button>
+        <NuxtLink to="/products" ><button class="explore-button"><a href="#">Explore</a></button></NuxtLink>
       </div>
 
 
@@ -24,6 +27,7 @@
       </div>
 
       <div class="second-frame-categories">
+      <NuxtLink to="/products" v-on:click="productStateStore.setCategory('laptop')" >
         <div class="categories-laptop" id="category">
           <img src="@/assets/images/main-page/second-frame/laptop.png" alt="" class="categories-laptop-image">
           <span class="categories-laptop-text">
@@ -31,7 +35,8 @@
             <h2 class="category-paragraph">True Laptop Solution</h2>
           </span>
         </div>
-
+      </NuxtLink>
+      <NuxtLink to="/products" v-on:click="productStateStore.setCategory('watch')" >
         <div class="categories-watch" id="category">
           <img src="@/assets/images/main-page/second-frame/watch.png" alt="" class="categories-watch-image" >
           <span class="categories-laptop-text">
@@ -39,7 +44,8 @@
             <h2 class="category-paragraph">Not just stylish</h2>
           </span>
         </div>
-        
+      </NuxtLink>
+      <NuxtLink to="/products" v-on:click="productStateStore.setCategory('phone')" >
         <div class="categories-phones" id="category">
           <img src="@/assets/images/main-page/second-frame/phones.png" alt="" class="categories-phones-image">
           <span class="categories-phones-text">
@@ -47,7 +53,8 @@
             <h2 class="category-paragraph">Your day to day life</h2>
           </span>
         </div>
-
+      </NuxtLink>
+      <NuxtLink to="/products" v-on:click="productStateStore.setCategory('tablet')" >
         <div class="categories-tablets" id="category">
           <img src="@/assets/images/main-page/second-frame/tablet.png" alt="" class="categories-tablets-image">
           <span class="categories-tablets-text">
@@ -55,7 +62,7 @@
             <h2 class="category-paragraph">Empower your work</h2>
           </span>
         </div>
-
+      </NuxtLink>
       </div>
     </div>
 
@@ -69,7 +76,7 @@
         <div class="third-frame-container">
           <p>Smart light bulb pack</p>
           <h2>Latest and gratest</h2>
-          <button class="explore-button" id="third-frame-button"><a href="#">Explore</a></button>
+          <NuxtLink to="products/"><button class="explore-button" id="third-frame-button"><a href="#">Explore</a></button></NuxtLink>
 
           <img src="@/assets/images/main-page/third-frame/third-frame-watches.png" alt="" class="third-frame-container-img" style="{left: 40px}">
         </div>
@@ -97,6 +104,7 @@
 </template>
 
 <style scoped>
+
 .main-page{
   width: 90%;
   display: flex;
