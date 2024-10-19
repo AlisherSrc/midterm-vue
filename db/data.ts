@@ -1,4 +1,4 @@
-[
+export const PRODUCTS = [
   {
     "id": "AF0000001952",
     "name": "iPhone 12",

@@ -1,20 +1,27 @@
 <script setup>
-import { NuxtLink } from '#build/components';
-
+import Header from '~/components/Header.vue';
+// import AppHeader from '~/components/AppHeader.vue';
+import MainPage from '~/components/MainPage.vue';
+import AppFooter from '~/components/AppFooter.vue';
 </script>
 <template>
-    <h1>Welcome to the home page!</h1>
-    <ul>
-        <li>
-            <NuxtLink to="/about">About</NuxtLink>
-        </li>
-        <li>
-            <NuxtLink to="/posts/1">First post</NuxtLink>
-        </li>
-        <li>
-            <NuxtLink to="/posts/2">Second post</NuxtLink>
-        </li>
-    </ul>
+
+   <div>
+      <Header />
+      <div class="main-content">
+         <MainPage />
+         <AppFooter />
+      </div>
+   </div>
 </template>
+
+
 <style>
+.main-content {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   flex-flow: column;
+   width: 100%;
+}
 </style>

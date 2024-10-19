@@ -4,14 +4,16 @@
   "type": "module",
   "scripts": {
     "build": "nuxt build",
-    "start": "nuxt dev",
+    "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@pinia/nuxt": "^0.5.5",
     "nuxt": "^3.13.0",
     "vue": "latest",
-    "vue-router": "latest"
+    "vue-router": "^4.4.5",
+    "vuex": "^4.1.0"
   }
 }
